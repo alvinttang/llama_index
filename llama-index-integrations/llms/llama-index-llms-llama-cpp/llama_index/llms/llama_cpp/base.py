@@ -213,9 +213,9 @@ class LlamaCPP(CustomLLM):
 
     def _get_model_path_for_version(self) -> str:
         """Get model path for the current llama-cpp version."""
-        import pkg_resources
+        from importlib.metadata import version as get_version
 
-        version = pkg_resources.get_distribution("llama-cpp-python").version
+        version = get_version("llama-cpp-python")
         major, minor, patch = version.split(".")
 
         # NOTE: llama-cpp-python<=0.1.78 supports GGML, newer support GGUF

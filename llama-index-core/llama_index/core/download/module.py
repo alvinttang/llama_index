@@ -162,15 +162,19 @@ def download_module_and_reqs(
 
     # Install dependencies if there are any and not already installed
     if os.path.exists(requirements_path):
-        import pkg_resources
-        from pkg_resources import DistributionNotFound
+        from importlib.metadata import PackageNotFoundError, version
+
+        from packaging.requirements import Requirement
 
         try:
-            requirements = pkg_resources.parse_requirements(
-                Path(requirements_path).open()
-            )
-            pkg_resources.require([str(r) for r in requirements])
-        except DistributionNotFound:
+            requirements = [
+                Requirement(line.strip())
+                for line in Path(requirements_path).open()
+                if line.strip() and not line.startswith("#")
+            ]
+            for req in requirements:
+                version(req.name)
+        except PackageNotFoundError:
             subprocess.check_call(
                 [sys.executable, "-m", "pip", "install", "-r", requirements_path]
             )
