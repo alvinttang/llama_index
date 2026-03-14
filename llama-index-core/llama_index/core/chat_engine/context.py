@@ -36,20 +36,33 @@ from llama_index.core.chat_engine.utils import (
 
 DEFAULT_CONTEXT_TEMPLATE = (
     "Use the context information below to assist the user."
-    "\n--------------------\n"
+    "
+--------------------
+"
     "{context_str}"
-    "\n--------------------\n"
+    "
+--------------------
+"
 )
 
 DEFAULT_REFINE_TEMPLATE = (
-    "Using the context below, refine the following existing answer using the provided context to assist the user.\n"
-    "If the context isn't helpful, just repeat the existing answer and nothing more.\n"
-    "\n--------------------\n"
+    "Using the context below, refine the following existing answer using the provided context to assist the user.
+"
+    "If the context isn't helpful, just repeat the existing answer and nothing more.
+"
+    "
+--------------------
+"
     "{context_msg}"
-    "\n--------------------\n"
-    "Existing Answer:\n"
+    "
+--------------------
+"
+    "Existing Answer:
+"
     "{existing_answer}"
-    "\n--------------------\n"
+    "
+--------------------
+"
 )
 
 
@@ -151,7 +164,7 @@ class ContextChatEngine(BaseChatEngine):
         """Generate context information from a message."""
         nodes = await self._retriever.aretrieve(message)
         for postprocessor in self._node_postprocessors:
-            nodes = postprocessor.postprocess_nodes(
+            nodes = await postprocessor.apostprocess_nodes(
                 nodes, query_bundle=QueryBundle(message)
             )
 
