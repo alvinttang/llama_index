@@ -176,7 +176,7 @@ class MultiModalCondensePlusContextChatEngine(BaseChatEngine):
         """Generate context information from a message."""
         nodes = await self._retriever.aretrieve(message)
         for postprocessor in self._node_postprocessors:
-            nodes = postprocessor.postprocess_nodes(
+            nodes = await postprocessor.apostprocess_nodes(
                 nodes, query_bundle=QueryBundle(message)
             )
 
@@ -244,7 +244,9 @@ class MultiModalCondensePlusContextChatEngine(BaseChatEngine):
         streaming: bool = False,
     ) -> RESPONSE_TYPE:
         image_nodes, text_nodes = _get_image_and_text_nodes(nodes)
-        context_str = "\n\n".join(
+        context_str = "
+
+".join(
             [r.get_content(metadata_mode=MetadataMode.LLM) for r in text_nodes]
         )
         fmt_prompt = self._context_prompt_template.format(
@@ -300,7 +302,9 @@ class MultiModalCondensePlusContextChatEngine(BaseChatEngine):
         streaming: bool = False,
     ) -> RESPONSE_TYPE:
         image_nodes, text_nodes = _get_image_and_text_nodes(nodes)
-        context_str = "\n\n".join(
+        context_str = "
+
+".join(
             [r.get_content(metadata_mode=MetadataMode.LLM) for r in text_nodes]
         )
         fmt_prompt = self._context_prompt_template.format(
