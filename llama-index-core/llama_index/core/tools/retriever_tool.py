@@ -76,10 +76,12 @@ class RetrieverTool(AsyncBaseTool):
     def call(self, *args: Any, **kwargs: Any) -> ToolOutput:
         query_str = ""
         if args is not None:
-            query_str += ", ".join([str(arg) for arg in args]) + "\n"
+            query_str += ", ".join([str(arg) for arg in args]) + "
+"
         if kwargs is not None:
             query_str += (
-                ", ".join([f"{k!s} is {v!s}" for k, v in kwargs.items()]) + "\n"
+                ", ".join([f"{k!s} is {v!s}" for k, v in kwargs.items()]) + "
+"
             )
         if query_str == "":
             raise ValueError("Cannot call query engine without inputs")
@@ -90,7 +92,9 @@ class RetrieverTool(AsyncBaseTool):
         for doc in docs:
             assert isinstance(doc.node, (Node, TextNode))
             node_copy = doc.node.model_copy()
-            content += node_copy.get_content(MetadataMode.LLM) + "\n\n"
+            content += node_copy.get_content(MetadataMode.LLM) + "
+
+"
         return ToolOutput(
             content=content,
             tool_name=self.metadata.get_name(),
@@ -101,10 +105,12 @@ class RetrieverTool(AsyncBaseTool):
     async def acall(self, *args: Any, **kwargs: Any) -> ToolOutput:
         query_str = ""
         if args is not None:
-            query_str += ", ".join([str(arg) for arg in args]) + "\n"
+            query_str += ", ".join([str(arg) for arg in args]) + "
+"
         if kwargs is not None:
             query_str += (
-                ", ".join([f"{k!s} is {v!s}" for k, v in kwargs.items()]) + "\n"
+                ", ".join([f"{k!s} is {v!s}" for k, v in kwargs.items()]) + "
+"
             )
         if query_str == "":
             raise ValueError("Cannot call query engine without inputs")
@@ -114,7 +120,9 @@ class RetrieverTool(AsyncBaseTool):
         for doc in docs:
             assert isinstance(doc.node, (Node, TextNode))
             node_copy = doc.node.model_copy()
-            content += node_copy.get_content(MetadataMode.LLM) + "\n\n"
+            content += node_copy.get_content(MetadataMode.LLM) + "
+
+"
         return ToolOutput(
             content=content,
             tool_name=self.metadata.get_name(),
