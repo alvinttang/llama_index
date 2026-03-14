@@ -32,19 +32,31 @@ CITATION_QA_TEMPLATE = PromptTemplate(
     "Every answer should include at least one source citation. "
     "Only cite a source when you are explicitly referencing it. "
     "If none of the sources are helpful, you should indicate that. "
-    "For example:\n"
-    "Source 1:\n"
-    "The sky is red in the evening and blue in the morning.\n"
-    "Source 2:\n"
-    "Water is wet when the sky is red.\n"
-    "Query: When is water wet?\n"
+    "For example:
+"
+    "Source 1:
+"
+    "The sky is red in the evening and blue in the morning.
+"
+    "Source 2:
+"
+    "Water is wet when the sky is red.
+"
+    "Query: When is water wet?
+"
     "Answer: Water will be wet when the sky is red [2], "
-    "which occurs in the evening [1].\n"
+    "which occurs in the evening [1].
+"
     "Now it's your turn. Below are several numbered sources of information:"
-    "\n------\n"
+    "
+------
+"
     "{context_str}"
-    "\n------\n"
-    "Query: {query_str}\n"
+    "
+------
+"
+    "Query: {query_str}
+"
     "Answer: "
 )
 
@@ -55,24 +67,37 @@ CITATION_REFINE_TEMPLATE = PromptTemplate(
     "Every answer should include at least one source citation. "
     "Only cite a source when you are explicitly referencing it. "
     "If none of the sources are helpful, you should indicate that. "
-    "For example:\n"
-    "Source 1:\n"
-    "The sky is red in the evening and blue in the morning.\n"
-    "Source 2:\n"
-    "Water is wet when the sky is red.\n"
-    "Query: When is water wet?\n"
+    "For example:
+"
+    "Source 1:
+"
+    "The sky is red in the evening and blue in the morning.
+"
+    "Source 2:
+"
+    "Water is wet when the sky is red.
+"
+    "Query: When is water wet?
+"
     "Answer: Water will be wet when the sky is red [2], "
-    "which occurs in the evening [1].\n"
+    "which occurs in the evening [1].
+"
     "Now it's your turn. "
     "We have provided an existing answer: {existing_answer}"
     "Below are several numbered sources of information. "
     "Use them to refine the existing answer. "
     "If the provided sources are not helpful, you will repeat the existing answer."
-    "\nBegin refining!"
-    "\n------\n"
+    "
+Begin refining!"
+    "
+------
+"
     "{context_msg}"
-    "\n------\n"
-    "Query: {query_str}\n"
+    "
+------
+"
+    "Query: {query_str}
+"
     "Answer: "
 )
 
@@ -223,7 +248,9 @@ class CitationQueryEngine(BaseQueryEngine):
             )
 
             for text_chunk in text_chunks:
-                text = f"Source {len(new_nodes) + 1}:\n{text_chunk}\n"
+                text = f"Source {len(new_nodes) + 1}:
+{text_chunk}
+"
 
                 new_node = NodeWithScore(
                     node=TextNode.model_validate(node.node.model_dump()),
@@ -245,7 +272,7 @@ class CitationQueryEngine(BaseQueryEngine):
         nodes = await self._retriever.aretrieve(query_bundle)
 
         for postprocessor in self._node_postprocessors:
-            nodes = postprocessor.postprocess_nodes(nodes, query_bundle=query_bundle)
+            nodes = await postprocessor.apostprocess_nodes(nodes, query_bundle=query_bundle)
 
         return nodes
 
