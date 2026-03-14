@@ -146,13 +146,22 @@ class MultiModalContextChatEngine(BaseChatEngine):
             )
         return nodes
 
+    async def _async_apply_node_postprocessors(
+        self, nodes: List[NodeWithScore], query_bundle: QueryBundle
+    ) -> List[NodeWithScore]:
+        for node_postprocessor in self._node_postprocessors:
+            nodes = await node_postprocessor.apostprocess_nodes(
+                nodes, query_bundle=query_bundle
+            )
+        return nodes
+
     def _get_nodes(self, query_bundle: QueryBundle) -> List[NodeWithScore]:
         nodes = self._retriever.retrieve(query_bundle)
         return self._apply_node_postprocessors(nodes, query_bundle=query_bundle)
 
     async def _aget_nodes(self, query_bundle: QueryBundle) -> List[NodeWithScore]:
         nodes = await self._retriever.aretrieve(query_bundle)
-        return self._apply_node_postprocessors(nodes, query_bundle=query_bundle)
+        return await self._async_apply_node_postprocessors(nodes, query_bundle=query_bundle)
 
     def synthesize(
         self,
@@ -162,7 +171,9 @@ class MultiModalContextChatEngine(BaseChatEngine):
         streaming: bool = False,
     ) -> RESPONSE_TYPE:
         image_nodes, text_nodes = _get_image_and_text_nodes(nodes)
-        context_str = "\n\n".join(
+        context_str = "
+
+".join(
             [r.get_content(metadata_mode=MetadataMode.LLM) for r in text_nodes]
         )
         fmt_prompt = self._context_template.format(
@@ -218,7 +229,9 @@ class MultiModalContextChatEngine(BaseChatEngine):
         streaming: bool = False,
     ) -> RESPONSE_TYPE:
         image_nodes, text_nodes = _get_image_and_text_nodes(nodes)
-        context_str = "\n\n".join(
+        context_str = "
+
+".join(
             [r.get_content(metadata_mode=MetadataMode.LLM) for r in text_nodes]
         )
         fmt_prompt = self._context_template.format(
